@@ -1,0 +1,118 @@
+stages:
+  - test
+  - deploy
+
+before_script:
+  - if test -z "$TMPDIR" ; then export TMPDIR="/tmp" ; fi
+  - test -f /etc/default/gitlab-runner && . /etc/default/gitlab-runner
+  - test -z "$M2_HOME" && . /etc/profile.d/maven.sh
+  - test -z "$PACKER_HOME" && . /etc/profile.d/packer.sh
+  - test -z "$RUBY_VERSION" && . /etc/profile.d/rvm.sh
+  - test -z "$RUBY_LATEST" && export RUBY_LATEST=2.2.5
+  - export PROJECT=$(/usr/share/google/get_metadata_value project-id)
+  - export BUILD_NUMBER=$CI_BUILD_ID
+  - hostname
+  - pwd
+  - o=$(mkdir critic 2>/dev/null; echo $?)
+  - rvm use 2.2.5@migman --create
+  - rvm list
+  - |
+    gemset() {
+      let "wait = $RANDOM % 30"
+      sleep $((wait + 10))
+      if test ! -f $TMPDIR/migman.gemset.$CI_BUILD_REF ; then
+        touch $TMPDIR/migman.gemset.$CI_BUILD_REF
+        gem search aurora-base --source http://gems.build.olt.homedepot.com --all
+        echo yes | rvm gemset empty
+        sudo apt-get install cmake -y
+        bundle install
+      fi
+      n=0
+      rc=1
+      while test 0 -ne $((rc + 0)) -a 20 -gt $n ; do
+        sleep 3
+        rc=$(bundle check 2>&1 >/dev/null; echo $?)
+        echo $rc
+        let n=n+1
+      done
+    }
+
+.job_template: &job_definition  # Hidden job that defines an anchor named 'job_definition'
+  only:
+  - master
+  - develop
+  - /^feature/.*$/
+  tags:
+  - cicd
+  - hd-www-dev
+  cache:
+      key: "$CI_BUILD_REF_NAME"
+      untracked: false
+      paths:
+      - pkg/
+      - coverage/
+  artifacts:
+      name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
+      untracked: false
+      paths:
+      - pkg/
+      - critic/
+
+critic:
+  <<: *job_definition
+  stage: test
+  script:
+  - gemset
+  - rubycritic --path critic --deduplicate-symlinks bin lib/aurora
+
+rubocop:
+  <<: *job_definition
+  stage: test
+  script:
+  - gemset
+  - rubocop --format emacs --format offenses bin lib/aurora
+
+roodi:
+  <<: *job_definition
+  stage: test
+  script:
+  - gemset
+  - roodi --config=.roodi.yaml lib/aurora
+
+reek:
+  <<: *job_definition
+  stage: test
+  script:
+  - gemset
+  - reek bin lib --config=.config.reek
+
+test:
+  <<: *job_definition
+  stage: test
+  script:
+  - gemset
+  - rake spec --trace
+
+pkg_release:
+  <<: *job_definition
+  stage: deploy
+  tags:
+  - cicd
+  - hd-build
+  script:
+  - gemset
+  - rake repackage
+  - o=$(rm -fr repo 2>/dev/null; mkdir -p repo/gems 2>/dev/null; echo $?)
+  - ls -al ; cd repo
+  - echo gcp hd-build
+  - gsutil -q -m rsync -d -r gs://gems.build.olt.homedepot.com/ ./
+  - ls -al ../pkg/ ./gems/
+  - mv ../pkg/*.gem ./gems/
+  - gem generate_index .
+  - ls -al ../pkg/ ./gems/
+  - gsutil -m rsync -d -r ./ gs://gems.build.olt.homedepot.com/
+  - gsutil -q -m acl ch -r -u All:READ  gs://gems.build.olt.homedepot.com/*
+  - gsutil -q -m acl set -r public-read gs://gems.build.olt.homedepot.com/*
+  - echo "Wait a minute after copying objects ..." ; sleep 60
+  - gsutil -q -m setmeta -r -h "cache-control:public, max-age=10" gs://gems.build.olt.homedepot.com/*
+  - gem search aurora-migman --source http://gems.build.olt.homedepot.com --all

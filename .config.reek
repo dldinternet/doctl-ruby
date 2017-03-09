@@ -1,0 +1,23 @@
+---
+TooManyStatements:
+  enabled: true
+  exclude:
+  - initialize
+  max_statements: 25
+
+LongParameterList:
+  enabled: true
+  exclude:
+  - initialize
+  max_params: 8
+
+TooManyInstanceVariables:
+  enabled: true
+  max_instance_variables: 5
+
+### Excluding directories
+
+# Directories below will not be scanned at all
+exclude_paths:
+  - lib/google
+  - pkg
