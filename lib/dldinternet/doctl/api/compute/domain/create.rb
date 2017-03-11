@@ -5,15 +5,11 @@ module DLDInternet
     module API
       module Compute
         module Domain
-          class List < DLDInternet::DOctl::API::Base
+          class Create < DLDInternet::DOctl::API::Base
 
             # noinspection RubyUnnecessaryReturnValue
-            def GetDomainList()
-              list = []
-              client.domains.all().each do |page|
-                list << page
-              end
-              list
+            def CreateDomain(domain, ip_address)
+              client.domains.create(Hashie::Mash.new({name: domain, ip_address: ip_address}))
             end
 
           end

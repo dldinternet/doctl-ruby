@@ -5,15 +5,11 @@ module DLDInternet
     module API
       module Compute
         module Domain
-          class List < DLDInternet::DOctl::API::Base
+          class Delete < DLDInternet::DOctl::API::Base
 
             # noinspection RubyUnnecessaryReturnValue
-            def GetDomainList()
-              list = []
-              client.domains.all().each do |page|
-                list << page
-              end
-              list
+            def DeleteDomain(domain)
+              client.domains.delete(name: domain)
             end
 
           end

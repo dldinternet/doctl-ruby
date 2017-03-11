@@ -21,7 +21,7 @@ module DLDInternet
         # alias_method :task, :command
       end
 
-      attr_accessor :formatter, :writer, :notation
+      attr_accessor :formatter, :writer, :notation, :header, :format
 
       def initialize(args = [], local_options = {}, config = {})
         super(args,local_options,config)

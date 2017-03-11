@@ -127,9 +127,40 @@ module DLDInternet
         end
 
         def output(obj)
-          hash = obj.is_a?(Array) ? obj : (obj.is_a?(String) ? obj : hash_it(obj))
+          hash = obj.is_a?(Array) ? obj.map { |o| hash_it(o) } : (obj.is_a?(String) ? obj : hash_it(obj))
           str = format_it(hash)
           write str
+        end
+
+        def command_pre(*args)
+          parse_options
+          @logger.info @_invocations.map{ |_,v| v[0]}.join(' ') if options[:verbose]
+        end
+
+        def command_out(res)
+          case options[:format]
+          when /text|none/
+            output header_line unless options[:header] === false
+            case res.class.name
+            when /Array/
+              res.each do |obj|
+                output format_line(obj)
+              end
+            # when /Hash|String/
+            else
+              output format_line(res)
+            end
+          else
+            output res
+          end
+        end
+
+        def header_line()
+          @header.call()
+        end
+
+        def format_line(obj)
+          @format.call(obj)
         end
 
       end

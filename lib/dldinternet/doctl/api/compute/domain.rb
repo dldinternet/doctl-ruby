@@ -1,2 +1,6 @@
 require 'dldinternet/doctl/api/base'
 require 'dldinternet/doctl/api/compute/domain/list'
+require 'dldinternet/doctl/api/compute/domain/get'
+require 'dldinternet/doctl/api/compute/domain/create'
+require 'dldinternet/doctl/api/compute/domain/delete'
+require 'dldinternet/doctl/api/compute/domain/records'
