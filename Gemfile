@@ -24,6 +24,8 @@ source 'https://rubygems.org' do
 
     gem 'mixlib-shellout'
 
+    gem 'dldinternet-mixlib-thor',     :path => '../../ws/gems-ws/dldinternet-mixlib-thor',     :group => :development
+
   end
 
 end

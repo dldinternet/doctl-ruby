@@ -15,13 +15,6 @@ module DLDInternet
       class_option :access_token, type: :string
       class_option :config,       type: :string, default: '~/.config/doctl/config.yaml'
 
-      no_commands do
-
-        require 'dldinternet/doctl/mixins/no_commands'
-        include DLDInternet::DOctl::MixIns::NoCommands
-
-      end
-
       desc 'account SUBCOMMAND ... ARGS', 'do domains'
       subcommand 'account', ::DLDInternet::DOctl::Account::Command
 
@@ -33,10 +26,8 @@ module DLDInternet
 
       desc 'version', 'Version'
       def version()
-        parse_options
-        @logger.info "version" if options[:verbose]
-
-        output "#{self.class.namespace}(ruby) version #{::DLDInternet::DOctl::VERSION}"
+        command_pre
+        command_out "#{self.class.namespace}(ruby) version #{::DLDInternet::DOctl::VERSION}"
         0
       end
     end

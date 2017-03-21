@@ -1,10 +1,23 @@
 PATH
+  remote: ../../ws/gems-ws/dldinternet-mixlib-thor
+  specs:
+    dldinternet-mixlib-thor (0.2.0)
+      awesome_print
+      command_line_reporter (~> 3.3, >= 3.3.6)
+      dldinternet-mixlib-logging (~> 0.5)
+      hashie
+      inifile
+      paint-shortcuts
+      thor (~> 0.19, >= 0)
+
+PATH
   remote: .
   specs:
-    doctl (0.1.0)
+    doctl (0.4.0)
       awesome_print (> 0)
       command_line_reporter (~> 3.3, >= 3.3.6)
       dldinternet-mixlib-logging (>= 0.4.0)
+      dldinternet-mixlib-thor (>= 0.2.0)
       droplet_kit (>= 0.3)
       hashie
       nokogiri
@@ -92,6 +105,7 @@ GEM
       rake (>= 0.8, < 13.0)
     i18n (0.8.1)
     ice_nine (0.11.2)
+    inifile (3.0.0)
     json (2.0.3)
     kartograph (0.2.4)
     launchy (2.4.3)
@@ -205,6 +219,7 @@ PLATFORMS
 DEPENDENCIES
   builder!
   bundler!
+  dldinternet-mixlib-thor!
   doctl!
   flog (>= 4.4.0)!
   guard!
