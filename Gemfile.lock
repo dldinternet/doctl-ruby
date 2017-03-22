@@ -22,7 +22,7 @@ PATH
       hashie
       nokogiri
       paint-shortcuts
-      thor (> 0.3)
+      thor (>= 0.19.4)
 
 GEM
   remote: https://rubygems.org/
