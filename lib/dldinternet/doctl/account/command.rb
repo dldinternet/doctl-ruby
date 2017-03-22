@@ -18,13 +18,6 @@ module DLDInternet
           @format = ->(res) { sprintf('%-30s%-14s%-16s%-52s%s', res['email'], res['droplet_limit'], res['email_verified'], res['uuid'], res['status'] ) }
           res = DLDInternet::DOctl::API::Account::Get.new(options, @logger).GetAccount()
           command_out(res)
-          # case options[:format]
-          # when /text|none/
-          #   output sprintf('%-30s%-14s%-16s%-52s%s', 'Email','Droplet Limit','Email Verified',	'UUID', 'Status')
-          #   output sprintf('%-30s%-14s%-16s%-52s%s', res['email'], res['droplet_limit'], res['email_verified'], res['uuid'], res['status'] )
-          # else
-          #   output res
-          # end
           0
         end
 =begin
@@ -37,13 +30,6 @@ Limit	Remaining	Reset
           @header = -> { sprintf('%-7s%-10s%s', 'Limit','Remaining', 'Reset') }
           @format = ->(res) { sprintf('%-7s%-10s%s', res['ratelimit-limit'], res['ratelimit-remaining'], res['ratelimit-reset'] ) }
           res = DLDInternet::DOctl::API::Account::Ratelimit.new(options, @logger).GetRatelimit()
-          # case options[:format]
-          # when /text|none/
-          #   output sprintf('%-7s%-10s%s', 'Limit','Remaining', 'Reset')
-          #   output sprintf('%-7s%-10s%s', res['ratelimit-limit'], res['ratelimit-remaining'], res['ratelimit-reset'] )
-          # else
-          #   output res
-          # end
           command_out(res)
           0
         end

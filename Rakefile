@@ -24,7 +24,7 @@ require 'rubygems/tasks'
 Gem::Tasks.new
 
 require 'rubygems/package_task'
-Gem::PackageTask.new(Gem::Specification.load('dldi-opensrs.gemspec')) do |pkg|
+Gem::PackageTask.new(Gem::Specification.load('doctl.gemspec')) do |pkg|
   pkg.need_tar = true
   pkg.need_zip = false
 end

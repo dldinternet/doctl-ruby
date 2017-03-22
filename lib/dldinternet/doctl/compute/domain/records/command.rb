@@ -67,10 +67,19 @@ module DLDInternet
               records_formats
               command_pre(domain)
               res = DLDInternet::DOctl::API::Compute::Domain::Records::Update.new(options, @logger).UpdateDomainRecord(domain, record_from_options, options[:record_id])
-              command_out(res)
-              res = DLDInternet::DOctl::API::Compute::Domain::Records::Delete.new(options, @logger).DeleteDomainRecord(domain, options[:record_id])
-              command_out(DLDInternet::DOctl::API::Compute::Domain::Records::List.new(options, @logger).GetDomainRecordsList(domain))
-              0
+              if res.is_a?(::DropletKit::DomainRecord)
+                res = DLDInternet::DOctl::API::Compute::Domain::Records::Delete.new(options, @logger).DeleteDomainRecord(domain, options[:record_id])
+                if res === true
+                  command_out(DLDInternet::DOctl::API::Compute::Domain::Records::List.new(options, @logger).GetDomainRecordsList(domain))
+                  0
+                else
+                  command_out(res)
+                  1
+                end
+              else
+                command_out(res)
+                1
+              end
             end
           end
         end
