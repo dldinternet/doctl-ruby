@@ -13,7 +13,7 @@ PATH
 PATH
   remote: .
   specs:
-    doctl (0.4.2)
+    doctl (0.4.3)
       awesome_print (> 0)
       command_line_reporter (~> 3.3, >= 3.3.6)
       dldinternet-mixlib-logging (>= 0.7.0)
