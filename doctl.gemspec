@@ -24,7 +24,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'droplet_kit', '>= 0.3'
   gem.add_dependency 'thor', '> 0.3'
   gem.add_dependency 'awesome_print', '> 0'
-  gem.add_dependency 'dldinternet-mixlib-logging', '>= 0.4.0'
+  gem.add_dependency 'dldinternet-mixlib-logging', '>= 0.7.0'
   gem.add_dependency 'dldinternet-mixlib-thor', '>= 0.2.0'
   gem.add_dependency 'command_line_reporter', '~> 3.3', '>= 3.3.6'
 
